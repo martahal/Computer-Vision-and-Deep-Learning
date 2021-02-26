@@ -3,7 +3,7 @@ import torch
 import typing
 import time
 import collections
-from assignment3 import utils
+import utils
 import pathlib
 
 
