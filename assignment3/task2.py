@@ -1,9 +1,9 @@
 import pathlib
 import matplotlib.pyplot as plt
-import utils
+from assignment3 import utils
 from torch import nn
-from dataloaders import load_cifar10
-from trainer import Trainer, compute_loss_and_accuracy
+from assignment3.dataloaders import load_cifar10
+from assignment3.trainer import Trainer, compute_loss_and_accuracy
 
 
 class ExampleModel(nn.Module):
@@ -18,28 +18,68 @@ class ExampleModel(nn.Module):
                 num_classes: Number of classes we want to predict (10)
         """
         super().__init__()
+
         # TODO: Implement this function (Task  2a)
         num_filters = 32  # Set number of filters in first conv layer
         self.num_classes = num_classes
         # Define the convolutional layers
         self.feature_extractor = nn.Sequential(
+            # [in: 3, out 32, input spatial size: 32x32, output spatial size: 16x16]
             nn.Conv2d(
                 in_channels=image_channels,
                 out_channels=num_filters,
                 kernel_size=5,
                 stride=1,
                 padding=2
-            )
+                ),
+            nn.ReLU(),
+            nn.MaxPool2d(
+                kernel_size=2,
+                stride=2
+                ),
+            # [in: 32, out 64, input spatial size: 16x16, output spatial size: 8x8]
+            nn.Conv2d(
+                in_channels=num_filters,
+                out_channels=num_filters * 2,
+                kernel_size=5,
+                stride=1,
+                padding=2
+                ),
+            nn.ReLU(),
+            nn.MaxPool2d(
+                kernel_size=2,
+                stride=2
+                ),
+            # [in: 64, out 128, input spatial size: 8x8, output spatial size: 4x4]
+            nn.Conv2d(
+                in_channels=num_filters*2,
+                out_channels=num_filters*4,
+                kernel_size=5,
+                stride=1,
+                padding=2
+                ),
+            nn.ReLU(),
+            nn.MaxPool2d(
+                kernel_size=2,
+                stride=2
+            ),
+            nn.Flatten()
+
         )
         # The output of feature_extractor will be [batch_size, num_filters, 16, 16]
-        self.num_output_features = 32*32*32
+        #self.num_output_features = 32*32*32
+        #self.num_output_features = 32 * 16 * 16
+        self.num_output_features = 128 * 4 * 4
         # Initialize our last fully connected layer
         # Inputs all extracted features from the convolutional layers
         # Outputs num_classes predictions, 1 for each class.
         # There is no need for softmax activation function, as this is
         # included with nn.CrossEntropyLoss
         self.classifier = nn.Sequential(
-            nn.Linear(self.num_output_features, num_classes),
+            nn.Linear(in_features=self.num_output_features, out_features=64),
+            nn.ReLU(),
+            nn.Linear(in_features=64, out_features=num_classes),
+
         )
 
     def forward(self, x):
@@ -49,8 +89,11 @@ class ExampleModel(nn.Module):
             x: Input image, shape: [batch_size, 3, 32, 32]
         """
         # TODO: Implement this function (Task  2a)
+        x = self.feature_extractor(x)
+        x = self.classifier(x)
         batch_size = x.shape[0]
         out = x
+        #print(out.shape)
         expected_shape = (batch_size, self.num_classes)
         assert out.shape == (batch_size, self.num_classes),\
             f"Expected output of forward pass to be: {expected_shape}, but got: {out.shape}"
@@ -95,3 +138,24 @@ if __name__ == "__main__":
     )
     trainer.train()
     create_plots(trainer, "task2")
+
+    #Loading best model and plotting train, val, test accuracy
+    trainer.load_best_model()
+    print(trainer.model)
+    train_loss, train_acc = compute_loss_and_accuracy(
+        dataloaders[0], trainer.model, loss_criterion=nn.CrossEntropyLoss()
+    )
+    val_loss, val_acc = compute_loss_and_accuracy(
+        dataloaders[1], trainer.model, loss_criterion=nn.CrossEntropyLoss()
+    )
+
+    test_loss, test_accuracy = compute_loss_and_accuracy(
+        dataloaders[2], trainer.model, loss_criterion=nn.CrossEntropyLoss()
+    )
+    print('Performance for best model:')
+    print('train loss, ', train_loss)
+    print('train accuracy: ', train_acc)
+    print('validation loss: ', val_loss)
+    print('validation accuracy: ', val_acc)
+    print('test_loss: ', test_loss)
+    print('test_accuracy: ', test_accuracy)

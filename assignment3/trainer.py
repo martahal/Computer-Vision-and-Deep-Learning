@@ -3,7 +3,7 @@ import torch
 import typing
 import time
 import collections
-import utils
+from assignment3 import utils
 import pathlib
 
 
@@ -24,6 +24,8 @@ def compute_loss_and_accuracy(
     average_loss = 0
     accuracy = 0
     # TODO: Implement this function (Task  2a)
+    total_correct = 0
+    total_images = 0
     with torch.no_grad():
         for (X_batch, Y_batch) in dataloader:
             # Transfer images/labels to GPU VRAM, if possible
@@ -33,8 +35,16 @@ def compute_loss_and_accuracy(
             output_probs = model(X_batch)
 
             # Compute Loss and Accuracy
+            average_loss += loss_criterion(output_probs, Y_batch)
+            predictions = torch.argmax(output_probs, dim=1)
+            total_correct += (predictions == Y_batch).sum().item()
+            total_images += predictions.shape[0]
 
-    return average_loss, accuracy
+        average_loss /= len(dataloader)
+        accuracy = total_correct / total_images
+
+
+    return average_loss.item(), accuracy
 
 
 class Trainer:
