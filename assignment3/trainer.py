@@ -3,7 +3,7 @@ import torch
 import typing
 import time
 import collections
-from assignment3 import utils
+import utils
 import pathlib
 
 
@@ -44,7 +44,7 @@ def compute_loss_and_accuracy(
         accuracy = total_correct / total_images
 
 
-    return average_loss.item(), accuracy
+    return round(average_loss.item(), 4), round(accuracy,4)
 
 
 class Trainer:

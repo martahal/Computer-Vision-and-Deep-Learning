@@ -44,7 +44,7 @@ def compute_loss_and_accuracy(
         accuracy = total_correct / total_images
 
 
-    return average_loss.item(), accuracy
+    return round(average_loss.item(), 4), round(accuracy,4)
 
 
 class Trainer:
@@ -75,6 +75,7 @@ class Trainer:
         # Define our optimizer. SGD = Stochastich Gradient Descent
         self.optimizer = torch.optim.SGD(self.model.parameters(),
                                          self.learning_rate)
+        #self.optimizer = torch.optim.adam(self.model.parameters(), self.learning_rate, weight_decay= 1)
         # Load our dataset
         self.dataloader_train, self.dataloader_val, self.dataloader_test = dataloaders
 
