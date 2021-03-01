@@ -32,7 +32,7 @@ class Task3Model(nn.Module):
                 stride=1,
                 padding=2
                 ),
-            nn.ReLU(),
+            nn.ELU(),
             # [in: 8, out 16, input spatial size: 32x32, output spatial size: 16 x 16]
             nn.Conv2d(
                 in_channels=num_filters,
@@ -41,7 +41,7 @@ class Task3Model(nn.Module):
                 stride=1,
                 padding=2
                 ),
-            nn.ReLU(),
+            nn.ELU(),
             nn.MaxPool2d(
                 kernel_size=2,
                 stride=2
@@ -54,7 +54,7 @@ class Task3Model(nn.Module):
                 stride=1,
                 padding=2
                 ),
-            nn.ReLU(),
+            nn.ELU(),
             # [in: 16, out 32 , input spatial size: 16x16, output spatial size: 8x8]
             nn.Conv2d(
                in_channels=num_filters*2,
@@ -63,7 +63,7 @@ class Task3Model(nn.Module):
                stride=1,
                padding=2
                ),
-            nn.ReLU(),
+            nn.ELU(),
             nn.MaxPool2d(
                 kernel_size=2,
                 stride=2
@@ -76,7 +76,7 @@ class Task3Model(nn.Module):
                 stride=1,
                 padding=2
                 ),
-            nn.ReLU(),
+            nn.ELU(),
             #  [in: 32, out 32, input spatial size: 8x8, output spatial size: 4x4]
             nn.Conv2d(
                 in_channels=num_filters * 4,
@@ -85,7 +85,7 @@ class Task3Model(nn.Module):
                 stride=1,
                 padding=2
                 ),
-            nn.ReLU(),
+            nn.ELU(),
             nn.MaxPool2d(
                 kernel_size=2,
                 stride=2
@@ -104,7 +104,7 @@ class Task3Model(nn.Module):
         # included with nn.CrossEntropyLoss
         self.classifier = nn.Sequential(
             nn.Linear(in_features=self.num_output_features, out_features=64),
-            nn.ReLU(),
+            nn.ELU(),
             nn.Linear(in_features=64, out_features=num_classes),
 
         )
@@ -164,7 +164,7 @@ if __name__ == "__main__":
         dataloaders
     )
     trainer.train()
-    create_plots(trainer, "task2")
+    create_plots(trainer, "task3testing")
 
     #Loading best model and plotting train, val, test accuracy
     trainer.load_best_model()
