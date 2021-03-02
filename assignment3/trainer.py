@@ -3,7 +3,7 @@ import torch
 import typing
 import time
 import collections
-import utils
+from assignment3 import utils
 import pathlib
 
 
@@ -75,7 +75,7 @@ class Trainer:
         # Define our optimizer. SGD = Stochastich Gradient Descent
         #self.optimizer = torch.optim.SGD(self.model.parameters(),
         #                                 self.learning_rate)
-        self.optimizer = torch.optim.adam(self.model.parameters(), self.learning_rate, weight_decay= 0.01)
+        self.optimizer = torch.optim.Adam(self.model.parameters(), self.learning_rate, weight_decay= 0.01)
         # Load our dataset
         self.dataloader_train, self.dataloader_val, self.dataloader_test = dataloaders
 
