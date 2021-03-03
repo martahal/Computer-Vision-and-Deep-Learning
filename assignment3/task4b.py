@@ -77,14 +77,14 @@ def show_activation_and_filter_from_layer(layer_activation, indices,name:str, la
     for i in range(len(activation_images)):
         if plotfilters:
             fig.add_subplot(2, len(indices), i + 1)
-            plt.title(f"Filter at index {i}")
+            plt.title(f"Filter at index {indices[i]}")
             plt.imshow(filter_images[i])
             fig.add_subplot(2,len(indices),len(indices) + i+1)
-            plt.title(f"Feature map at index {i}")
+            plt.title(f"Feature map index {indices[i]}")
             plt.imshow(activation_images[i], cmap='gray')
         else:
             fig.add_subplot(1, len(indices), i + 1)
-            plt.title(f"Feature map at index {i}")
+            plt.title(f"Feature map index {indices[i]}")
             plt.imshow(activation_images[i], cmap='gray')
     plt.savefig(plot_path.joinpath(f"{name}_plot.png"))
     plt.show()
