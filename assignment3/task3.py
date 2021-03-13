@@ -1,9 +1,9 @@
 import pathlib
 import matplotlib.pyplot as plt
-import utils
+from assignment3 import utils
 from torch import nn
-dataloaders import load_cifar10
-trainer import Trainer, compute_loss_and_accuracy
+from assignment3.dataloaders import load_cifar10
+from assignment3.trainer import Trainer, compute_loss_and_accuracy
 
 
 class Task3Model(nn.Module):
