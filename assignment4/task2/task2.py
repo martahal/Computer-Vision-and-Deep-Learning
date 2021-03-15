@@ -51,7 +51,10 @@ def calculate_precision(num_tp, num_fp, num_fn):
     Returns:
         float: value of precision
     """
-    raise NotImplementedError
+    divisor = num_tp + num_fp
+    if divisor == 0:
+        return 1
+    return num_tp / divisor
 
 
 def calculate_recall(num_tp, num_fp, num_fn):
@@ -64,7 +67,10 @@ def calculate_recall(num_tp, num_fp, num_fn):
     Returns:
         float: value of recall
     """
-    raise NotImplementedError
+    divisor = num_tp + num_fn
+    if divisor == 0:
+        return 0
+    return num_tp / divisor
 
 
 def get_all_box_matches(prediction_boxes, gt_boxes, iou_threshold):
