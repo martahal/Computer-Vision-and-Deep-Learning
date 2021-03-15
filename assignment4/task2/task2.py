@@ -73,7 +73,34 @@ def calculate_recall(num_tp, num_fp, num_fn):
     return num_tp / divisor
 
 
-def get_all_box_matches(prediction_boxes, gt_boxes, iou_threshold):
+class Match:
+    def __init__(self, gt_box, iou: float, gt_index):
+        self.gt_box = gt_box,
+        self.iou = iou,
+        self.gt_index = gt_index
+
+    def __cmp__(self, other):
+        return self.iou - other.iou
+
+
+class PredictedMatches:
+    def __init__(self, predicted_box_index, predicted_box):
+        self.predicted_box_index = predicted_box_index
+        self.predicted_box = predicted_box
+        self.matches = []
+
+    def add_match(self, match: Match):
+        self.matches.append(match)
+
+    def has_matches(self) -> bool:
+        return len(self.matches) > 0
+
+    def get_highest_match(self) -> Match:
+        self.matches.sort()
+        return self.matches[0]
+
+
+def get_all_box_matches(prediction_boxes: np.array, gt_boxes: np.array, iou_threshold):
     """Finds all possible matches for the predicted boxes to the ground truth boxes.
         No bounding box can have more than one match.
 
@@ -94,15 +121,33 @@ def get_all_box_matches(prediction_boxes, gt_boxes, iou_threshold):
             Each row includes [xmin, ymin, xmax, ymax]
     """
     # Find all possible matches with a IoU >= iou threshold
+    matches = []
+    for i, predicted_box in enumerate(prediction_boxes):
+        predicted_matches = PredictedMatches(i, predicted_box)
+        for j, gt_box in enumerate(gt_boxes):
+            iou = calculate_iou(predicted_box, gt_box)
+            if iou >= iou_threshold:
+                match = Match(gt_box, iou, j)
+                predicted_matches.add_match(match)
+        matches.append(predicted_matches)
 
-
-    # Sort all matches on IoU in descending order
 
     # Find all matches with the highest IoU threshold
+    matched_predictions_idx = []
+    matched_gts_idx = []
+    matching_prediction_boxes = np.array([])
+    matching_gt_boxes = np.array([])
+    for match in matches:
+        if match.has_matches():
+            highest_match = match.get_highest_match()
+            if highest_match.gt_index in matched_gts_idx or match.predicted_box_index in matched_predictions_idx:
+                continue
+            matched_predictions_idx.append(match.predicted_box_index)
+            matched_gts_idx.append(highest_match.gt_index)
+            matching_prediction_boxes = np.append(matching_prediction_boxes, match.predicted_box)
+            matching_gt_boxes = np.append(matching_gt_boxes, highest_match.gt_box)
 
-
-
-    return np.array([]), np.array([])
+    return matching_prediction_boxes, matching_gt_boxes
 
 
 def calculate_individual_image_result(prediction_boxes, gt_boxes, iou_threshold):
