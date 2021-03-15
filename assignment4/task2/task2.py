@@ -18,11 +18,26 @@ def calculate_iou(prediction_box, gt_box):
     # YOUR CODE HERE
 
     # Compute intersection
-
+    intersection = calculate_intersection(prediction_box, gt_box)
     # Compute union
+    union = calculate_union(prediction_box, gt_box, intersection)
     iou = 0
+    if union > 0 and intersection > 0:
+        iou = intersection / union
     assert iou >= 0 and iou <= 1
     return iou
+
+
+def calculate_intersection(prediction_box, gt_box):
+    dx = min(prediction_box[2], gt_box[2]) - max(prediction_box[0], gt_box[0])
+    dy = min(prediction_box[3], gt_box[3]) - max(prediction_box[1], gt_box[1])
+    return dx * dy
+
+
+def calculate_union(prediction_box, gt_box, intersection):
+    area_prediction_box = abs(prediction_box[2] - prediction_box[0]) * abs(prediction_box[3] - prediction_box[1])
+    area_gt_box = abs(gt_box[2] - gt_box[0]) * abs(gt_box[3] - gt_box[1])
+    return area_gt_box + area_prediction_box - intersection
 
 
 def calculate_precision(num_tp, num_fp, num_fn):
