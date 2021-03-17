@@ -24,7 +24,8 @@ def do_train(cfg, model,
              data_loader,
              optimizer,
              checkpointer,
-             arguments):
+             arguments,
+            lr_scheduler=None):
     logger = logging.getLogger("SSD.trainer")
     logger.info("Start training ...")
     meters = MetricLogger()
@@ -51,6 +52,8 @@ def do_train(cfg, model,
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
+        if lr_scheduler is not None:
+            lr_scheduler.step()
 
         batch_time = time.time() - end
         end = time.time()
@@ -92,6 +95,8 @@ def do_train(cfg, model,
 
         if iteration >= cfg.SOLVER.MAX_ITER:
             break
+            
+        
 
     checkpointer.save("model_final", **arguments)
     # compute training time

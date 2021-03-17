@@ -56,10 +56,10 @@ class BasicModel(torch.nn.Module):
                 ),
                 nn.ReLU(),
                 nn.Conv2d(
-                    in_channels=32,
+                    in_channels=64,
                     out_channels=output_channels[0],
                     kernel_size=3,
-                    stride=1,
+                    stride=2,
                     padding=1
                 ),
             )),
@@ -77,7 +77,7 @@ class BasicModel(torch.nn.Module):
                     in_channels=128,
                     out_channels=output_channels[1],
                     kernel_size=3,
-                    stride=1,
+                    stride=2,
                     padding=1
                 ),
             )),
@@ -95,7 +95,7 @@ class BasicModel(torch.nn.Module):
                     in_channels=256,
                     out_channels=output_channels[2],
                     kernel_size=3,
-                    stride=1,
+                    stride=2,
                     padding=1
                 ),
             )),
@@ -113,7 +113,7 @@ class BasicModel(torch.nn.Module):
                     in_channels=128,
                     out_channels=output_channels[3],
                     kernel_size=3,
-                    stride=1,
+                    stride=2,
                     padding=1
                 ),
             )),
@@ -131,7 +131,7 @@ class BasicModel(torch.nn.Module):
                     in_channels=128,
                     out_channels=output_channels[4],
                     kernel_size=3,
-                    stride=1,
+                    stride=2,
                     padding=1
                 ),
             )),
@@ -169,11 +169,11 @@ class BasicModel(torch.nn.Module):
             shape(-1, output_channels[0], 38, 38),
         """
         l1_feature = self.feature_extractor.layer1(x)
-        l2_feature = self.feature_extractor.layer1(l1_feature)
-        l3_feature = self.feature_extractor.layer1(l2_feature)
-        l4_feature = self.feature_extractor.layer1(l3_feature)
-        l5_feature = self.feature_extractor.layer1(l4_feature)
-        l6_feature = self.feature_extractor.layer1(l5_feature)
+        l2_feature = self.feature_extractor.layer2(l1_feature)
+        l3_feature = self.feature_extractor.layer3(l2_feature)
+        l4_feature = self.feature_extractor.layer4(l3_feature)
+        l5_feature = self.feature_extractor.layer5(l4_feature)
+        l6_feature = self.feature_extractor.layer6(l5_feature)
         out_features = [l1_feature,
                         l2_feature,
                         l3_feature,
@@ -183,7 +183,7 @@ class BasicModel(torch.nn.Module):
 
         for idx, feature in enumerate(out_features):
             w, h = self.output_feature_shape[idx]
-            expected_shape = (out_channel, h, w)
+            expected_shape = (self.output_channels[idx], h, w)
             assert feature.shape[1:] == expected_shape, \
                 f"Expected shape: {expected_shape}, got: {feature.shape[1:]} at output IDX: {idx}"
         return tuple(out_features)
