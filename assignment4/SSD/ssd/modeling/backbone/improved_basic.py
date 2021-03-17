@@ -3,7 +3,7 @@ from torch import nn
 from collections import OrderedDict
 
 
-class BasicModel(torch.nn.Module):
+class ImprovedBasicModel(torch.nn.Module):
     """
     This is a basic backbone for SSD.
     The feature extractor outputs a list of 6 feature maps, with the sizes:
@@ -30,7 +30,7 @@ class BasicModel(torch.nn.Module):
                     stride=1,
                     padding=1
                 ),
-                nn.SELU(),
+                nn.ELU(),
                 nn.MaxPool2d(
                     kernel_size=2,
                     stride=2
@@ -42,124 +42,116 @@ class BasicModel(torch.nn.Module):
                     stride=1,
                     padding=1
                 ),
-                nn.SELU(),
+                nn.ELU(),
                 nn.MaxPool2d(
                     kernel_size=2,
                     stride=2
                 ),
                 nn.Conv2d(
                     in_channels=64,
-                    out_channels=64,
+                    out_channels=128,
                     kernel_size=3,
                     stride=1,
                     padding=1
                 ),
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
-                    in_channels=64,
+                    in_channels=128,
                     out_channels=output_channels[0],
                     kernel_size=3,
                     stride=2,
                     padding=1
                 ),
-                nn.BatchNorm2d(num_features=output_channels[0]),
             )),
             ('layer2', nn.Sequential(
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
                     in_channels=output_channels[0],
-                    out_channels=128,
+                    out_channels=output_channels[0],
                     kernel_size=3,
                     stride=1,
                     padding=1
                 ),
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
-                    in_channels=128,
+                    in_channels=output_channels[0],
                     out_channels=output_channels[1],
                     kernel_size=3,
                     stride=2,
                     padding=1
                 ),
-                nn.BatchNorm2d(num_features=output_channels[1]),
-
             )),
             ('layer3', nn.Sequential(
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
                     in_channels=output_channels[1],
-                    out_channels=256,
+                    out_channels=output_channels[1],
                     kernel_size=3,
                     stride=1,
                     padding=1
                 ),
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
-                    in_channels=256,
+                    in_channels=output_channels[1],
                     out_channels=output_channels[2],
                     kernel_size=3,
                     stride=2,
                     padding=1
                 ),
-                nn.BatchNorm2d(num_features=output_channels[2]),
-
             )),
             ('layer4',nn.Sequential(
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
                     in_channels=output_channels[2],
-                    out_channels=128,
+                    out_channels=output_channels[2],
                     kernel_size=3,
                     stride=1,
                     padding=1
                 ),
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
-                    in_channels=128,
+                    in_channels=output_channels[2],
                     out_channels=output_channels[3],
                     kernel_size=3,
                     stride=2,
                     padding=1
                 ),
-                nn.BatchNorm2d(num_features=output_channels[3]),
             )),
             ('layer5',nn.Sequential(
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
                     in_channels=output_channels[3],
-                    out_channels=128,
+                    out_channels=output_channels[3],
                     kernel_size=3,
                     stride=1,
                     padding=1
                 ),
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
-                    in_channels=128,
+                    in_channels=output_channels[3],
                     out_channels=output_channels[4],
                     kernel_size=3,
                     stride=2,
                     padding=1
                 ),
-                nn.BatchNorm2d(num_features=output_channels[4]),
             )),
             ('layer6', nn.Sequential(
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
                     in_channels=output_channels[4],
-                    out_channels=128,
+                    out_channels=output_channels[4],
                     kernel_size=3,
                     stride=1,
                     padding=1
                 ),
-                nn.SELU(),
+                nn.ELU(),
                 nn.Conv2d(
-                    in_channels=128,
+                    in_channels=output_channels[4],
                     out_channels=output_channels[5],
                     kernel_size=3,
                     stride=1,
                     padding=0
                 ),
-                nn.BatchNorm2d(num_features=output_channels[5]),
             ))
         ]))
 

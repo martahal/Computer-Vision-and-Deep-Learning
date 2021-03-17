@@ -41,12 +41,19 @@ def start_train(cfg):
         momentum=cfg.SOLVER.MOMENTUM,
         weight_decay=cfg.SOLVER.WEIGHT_DECAY
     )
+    lr_scheduler = torch.optim.lr_scheduler.CyclicLR(
+        optimizer= optimizer,
+        base_lr= cfg.SOLVER.LR /100,
+        max_lr=cfg.SOLVER.LR*10,
+        step_size_up=1500,
+        mode='triangular2'
+        )
 
 
     arguments = {"iteration": 0}
     save_to_disk = True
     checkpointer = CheckPointer(
-        model, optimizer, cfg.OUTPUT_DIR, save_to_disk, logger,
+        model, optimizer, cfg.OUTPUT_DIR, save_to_disk, logger
         )
     extra_checkpoint_data = checkpointer.load()
     arguments.update(extra_checkpoint_data)
@@ -56,7 +63,7 @@ def start_train(cfg):
 
     model = do_train(
         cfg, model, train_loader, optimizer,
-        checkpointer, arguments)
+        checkpointer, arguments, lr_scheduler)
     return model
 
 
