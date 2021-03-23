@@ -19,7 +19,6 @@ def run_demo(cfg, ckpt, score_threshold, images_dir: pathlib.Path, output_dir: p
         class_names = VOCDataset.class_names
     elif dataset_type == "mnist": 
         class_names = MNISTDetection.class_names 
-        #class_names = TDT4265Dataset.class_names
     else:
         raise NotImplementedError('Not implemented now.')
 

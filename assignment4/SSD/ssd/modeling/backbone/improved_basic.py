@@ -62,6 +62,7 @@ class ImprovedBasicModel(torch.nn.Module):
                     stride=2,
                     padding=1
                 ),
+                nn.BatchNorm2d(num_features=output_channels[0]),
             )),
             ('layer2', nn.Sequential(
                 nn.ELU(),
@@ -80,6 +81,7 @@ class ImprovedBasicModel(torch.nn.Module):
                     stride=2,
                     padding=1
                 ),
+                nn.BatchNorm2d(num_features=output_channels[1]),
             )),
             ('layer3', nn.Sequential(
                 nn.ELU(),
@@ -98,6 +100,7 @@ class ImprovedBasicModel(torch.nn.Module):
                     stride=2,
                     padding=1
                 ),
+                nn.BatchNorm2d(num_features=output_channels[2]),
             )),
             ('layer4',nn.Sequential(
                 nn.ELU(),
@@ -116,6 +119,7 @@ class ImprovedBasicModel(torch.nn.Module):
                     stride=2,
                     padding=1
                 ),
+                nn.BatchNorm2d(num_features=output_channels[3]),
             )),
             ('layer5',nn.Sequential(
                 nn.ELU(),
@@ -134,6 +138,7 @@ class ImprovedBasicModel(torch.nn.Module):
                     stride=2,
                     padding=1
                 ),
+                nn.BatchNorm2d(num_features=output_channels[4]),
             )),
             ('layer6', nn.Sequential(
                 nn.ELU(),
@@ -152,6 +157,7 @@ class ImprovedBasicModel(torch.nn.Module):
                     stride=1,
                     padding=0
                 ),
+                nn.BatchNorm2d(num_features=output_channels[5]),
             ))
         ]))
 

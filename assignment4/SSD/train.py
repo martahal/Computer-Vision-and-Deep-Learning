@@ -43,7 +43,7 @@ def start_train(cfg):
     )
     lr_scheduler = torch.optim.lr_scheduler.CyclicLR(
         optimizer= optimizer,
-        base_lr= cfg.SOLVER.LR /100,
+        base_lr= cfg.SOLVER.LR /10,
         max_lr=cfg.SOLVER.LR*10,
         step_size_up=1500,
         mode='triangular2'
